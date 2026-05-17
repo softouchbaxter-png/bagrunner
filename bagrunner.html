@@ -243,29 +243,49 @@ function parseManifest(rows) {
     var col3 = String(row[3] || '').trim(); // Customer
     var col4 = String(row[4] || '').trim(); // Bags
     var col5 = String(row[5] || '').trim(); // Miles
+    var col6 = String(row[6] || '').trim(); // Notes/Earnings
 
-    // Day header — contains day name or is a Google Maps hyperlink
-    var isDayHeader = /\b(MON|TUES|WEDS|THUR|FRI|SAT|SUN)\b/i.test(col0) ||
+    // Day header detection — multiple strategies
+    // The Sheets API may return HYPERLINK formula display text or raw text
+    var dayNames = ['MON','TUES','WEDS','THUR','FRI','SAT','SUN'];
+    var col0Upper = col0.toUpperCase();
+    var isDayHeader = dayNames.some(function(d) { return col0Upper.indexOf(d) !== -1; }) ||
                       col0.indexOf('Tap to Open') !== -1 ||
-                      col0.indexOf('Google Maps') !== -1;
+                      col0.indexOf('Google Maps') !== -1 ||
+                      col0.indexOf('maps/dir') !== -1;
+
+    // Also check if ALL other columns are empty (merged header row)
+    var allOtherEmpty = !col1 && !col2 && !col3 && !col4 && col0.length > 3;
+    if (allOtherEmpty && col0.toUpperCase().indexOf('TOTAL') === -1 &&
+        col0.toUpperCase().indexOf('MANIFEST') === -1 &&
+        col0.toUpperCase().indexOf('GENERATED') === -1) {
+      isDayHeader = true;
+    }
 
     if (isDayHeader) {
       if (currentDay) days.push(currentDay);
-      var label = col0.replace(/- Tap to Open.*/i, '').replace(/- Google Maps.*/i, '').trim();
-      // Extract maps URL if embedded in cell
+      var label = col0
+        .replace(/- Tap to Open.*/i, '')
+        .replace(/- Google Maps.*/i, '')
+        .replace(/https:.*/, '')
+        .trim();
+      if (!label) label = col0.trim();
       var mapsUrl = '';
-      var urlMatch = col0.match(/https:\/\/www\.google\.com\/maps\/dir\/[^\s"]+/);
-      if (urlMatch) mapsUrl = urlMatch[0];
-      currentDay = { label: label, mapsUrl: mapsUrl, stops: [], totalMiles: 0, earnings: 0 };
+      var urlMatch = col0.match(/https:\/\/www\.google\.com\/maps\/dir\/[^\s"\)]+/);
+      if (urlMatch) mapsUrl = decodeURIComponent(urlMatch[0]);
+      currentDay = { label: label || 'Day', mapsUrl: mapsUrl, stops: [], totalMiles: 0, earnings: 0 };
       continue;
     }
 
     if (!currentDay) continue;
 
-    // Day total row
-    if (col3 === 'DAY TOTAL' || col4.indexOf('miles') !== -1) {
-      currentDay.totalMiles = parseFloat(col4) || 0;
-      currentDay.earnings = parseFloat(col5.replace('£','')) || (currentDay.totalMiles * CONFIG.ratePerMile);
+    // Day total row — col3 = "DAY TOTAL", col4 = "66.4 miles", col5 = "£61.09"
+    if (col3 === 'DAY TOTAL' || (col4 && col4.indexOf('miles') !== -1)) {
+      var milesStr = col4 || col5 || '';
+      currentDay.totalMiles = parseFloat(milesStr) || 0;
+      var earnStr = col5 || col6 || '';
+      currentDay.earnings = parseFloat(earnStr.replace(/[£,]/g,'')) || 
+                            (currentDay.totalMiles * CONFIG.ratePerMile);
       continue;
     }
 
