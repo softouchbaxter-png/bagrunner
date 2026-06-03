@@ -3,168 +3,214 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#1a3a2a">
+<meta name="theme-color" content="#174c32">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Bagrunner">
-<title>Bagrunner — Brigantes Driver</title>
+<title>Bagrunner - Brigantes Driver</title>
 <link rel="manifest" href="manifest.json">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700;800&family=DM+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0f1f17; --surface: #162b1e; --card: #1e3828; --border: #2a4a38;
-  --accent: #4ade80; --accent-dim: #22c55e; --gold: #fbbf24; --amber: #f97316;
-  --red: #ef4444; --text: #f0fdf4; --muted: #86efac; --faint: #4ade8044;
-  --mono: 'DM Mono', monospace; --sans: 'DM Sans', sans-serif; --display: 'Syne', sans-serif;
+  --page: #eef4ef;
+  --ink: #092015;
+  --muted: #5f7669;
+  --panel: #ffffff;
+  --panel-soft: #f7fbf8;
+  --line: #d7e4dc;
+  --green: #174c32;
+  --green-2: #236b45;
+  --mint: #dff4e5;
+  --mint-2: #c8ecd2;
+  --gold: #b7791f;
+  --gold-bg: #fff5dc;
+  --red: #9f1d1d;
+  --red-bg: #fde8e8;
+  --shadow: 0 14px 34px rgba(15, 46, 30, 0.12);
+  --mono: "DM Mono", monospace;
+  --sans: "DM Sans", system-ui, sans-serif;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--sans); overscroll-behavior: none; }
-
-.topbar { position: fixed; top: 0; left: 0; right: 0; height: 64px; background: var(--surface);
-  border-bottom: 1px solid var(--border); display: flex; align-items: center;
-  justify-content: space-between; padding: 0 20px; z-index: 100; }
-.logo { font-family: var(--display); font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; color: var(--accent); }
-.logo span { color: var(--muted); font-weight: 400; font-size: 0.75rem; display: block; letter-spacing: 0.05em; margin-top: -2px; }
-.gear-btn { background: none; border: none; color: var(--muted); font-size: 1.3rem; cursor: pointer; padding: 4px; }
-
-.summary-strip { position: fixed; top: 64px; left: 0; right: 0; background: var(--card);
-  border-bottom: 1px solid var(--border); padding: 10px 20px; display: flex; gap: 20px;
-  align-items: center; z-index: 99; overflow-x: auto; scrollbar-width: none; }
-.summary-strip::-webkit-scrollbar { display: none; }
-.stat { display: flex; flex-direction: column; min-width: fit-content; }
-.stat .val { font-family: var(--mono); font-size: 1.1rem; font-weight: 500; color: var(--accent); line-height: 1; }
-.stat .lbl { font-size: 0.62rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
-.stat-divider { width: 1px; height: 28px; background: var(--border); flex-shrink: 0; }
-.nav-btn { margin-left: auto; flex-shrink: 0; background: var(--accent); color: var(--bg);
-  border: none; padding: 8px 16px; border-radius: 8px; font-family: var(--display); font-weight: 700;
-  font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 5px; white-space: nowrap; }
-
-.day-tabs { position: fixed; top: 120px; left: 0; right: 0; background: var(--bg);
-  border-bottom: 1px solid var(--border); display: flex; overflow-x: auto;
-  scrollbar-width: none; z-index: 98; padding: 0 8px; }
+* { box-sizing: border-box; }
+html, body { min-height: 100%; margin: 0; background: var(--page); color: var(--ink); font-family: var(--sans); }
+body { padding: env(safe-area-inset-top, 0) 0 env(safe-area-inset-bottom, 0); }
+button, input { font: inherit; }
+button { cursor: pointer; }
+.shell { min-height: 100vh; display: flex; flex-direction: column; }
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: var(--green);
+  color: white;
+  box-shadow: 0 8px 22px rgba(9, 32, 21, 0.18);
+}
+.header-inner { padding: 14px 16px 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.brand { min-width: 0; }
+.brand-title { font-size: 25px; line-height: 1; font-weight: 900; letter-spacing: 0; }
+.brand-sub { margin-top: 3px; color: #bce9c8; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+.icon-btn {
+  min-width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.08);
+  color: white;
+  padding: 0 10px;
+  font-weight: 900;
+}
+.metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid rgba(255,255,255,0.12); }
+.metric { padding: 10px 10px 12px; border-right: 1px solid rgba(255,255,255,0.12); min-width: 0; }
+.metric:last-child { border-right: 0; }
+.metric-value { display: block; color: #79f1a0; font-family: var(--mono); font-size: 18px; line-height: 1.1; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.metric-label { display: block; margin-top: 3px; color: #c8ecd2; font-size: 10px; line-height: 1.1; text-transform: uppercase; font-weight: 800; letter-spacing: 0.05em; }
+.progress { height: 3px; background: rgba(255,255,255,0.12); }
+.progress-fill { height: 100%; width: 0; background: #79f1a0; transition: width .25s ease; }
+.day-tabs {
+  position: sticky;
+  top: 117px;
+  z-index: 25;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 10px 12px;
+  background: rgba(238,244,239,0.96);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+  scrollbar-width: none;
+}
 .day-tabs::-webkit-scrollbar { display: none; }
-.day-tab { flex-shrink: 0; padding: 10px 16px; font-family: var(--display); font-size: 0.75rem;
-  font-weight: 600; color: var(--muted); border-bottom: 2px solid transparent; cursor: pointer;
-  white-space: nowrap; transition: all 0.15s; position: relative; }
-.day-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-.day-tab .tab-miles { font-family: var(--mono); font-size: 0.6rem; opacity: 0.7; display: block; margin-top: 1px; }
-.day-tab .completed-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%;
-  position: absolute; top: 8px; right: 8px; }
-
-.main { padding-top: 168px; padding-bottom: 100px; min-height: 100vh; }
-
-.stop-card { margin: 8px 12px; border-radius: 14px; overflow: hidden; border: 1px solid var(--border); transition: all 0.2s; position: relative; }
-.stop-card.completed { opacity: 0.45; }
-.stop-card.home { border-color: var(--border); background: var(--surface); }
-.stop-card.pickup { border-left: 3px solid var(--gold); background: var(--card); }
-.stop-card.deliver { border-left: 3px solid var(--accent); background: var(--card); }
-
-.stop-header { display: flex; align-items: flex-start; padding: 14px 16px 10px; gap: 12px; }
-.stop-type-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center;
-  justify-content: center; font-size: 1.1rem; flex-shrink: 0; margin-top: 2px; }
-.pickup .stop-type-icon { background: #fbbf2422; }
-.deliver .stop-type-icon { background: #4ade8022; }
-.home .stop-type-icon { background: #86efac22; }
-.stop-info { flex: 1; min-width: 0; }
-.stop-type-label { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 3px; }
-.pickup .stop-type-label { color: var(--gold); }
-.deliver .stop-type-label { color: var(--accent); }
-.home .stop-type-label { color: var(--muted); }
-.stop-hotel { font-family: var(--display); font-size: 1.05rem; font-weight: 700; line-height: 1.2; color: var(--text); word-break: break-word; }
-.stop-meta { padding: 0 16px 12px; display: flex; flex-direction: column; gap: 5px; }
-.stop-customer { font-size: 0.82rem; color: var(--muted); line-height: 1.4; }
-.stop-bags { display: inline-flex; align-items: center; gap: 5px; font-family: var(--mono);
-  font-size: 0.78rem; font-weight: 500; padding: 3px 10px; border-radius: 6px; align-self: flex-start; margin-top: 2px; }
-.pickup .stop-bags { background: #fbbf2420; color: var(--gold); }
-.deliver .stop-bags { background: #4ade8020; color: var(--accent); }
-.stop-miles { position: absolute; top: 14px; right: 14px; font-family: var(--mono); font-size: 0.8rem;
-  color: var(--muted); background: var(--surface); padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border); }
-.stop-actions { display: flex; gap: 8px; padding: 0 12px 12px; }
-.btn-done { flex: 1; padding: 10px; border: none; border-radius: 10px; font-family: var(--display);
-  font-weight: 700; font-size: 0.82rem; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px; }
-.btn-done.mark { background: var(--accent); color: var(--bg); }
-.btn-done.mark:active { transform: scale(0.97); }
-.btn-done.unmark { background: var(--border); color: var(--muted); }
-.btn-maps { padding: 10px 14px; border: 1px solid var(--border); border-radius: 10px; background: transparent;
-  color: var(--muted); font-size: 1rem; cursor: pointer; display: flex; align-items: center;
-  justify-content: center; text-decoration: none; transition: all 0.15s; }
-.btn-maps:active { background: var(--border); }
-
-.day-total { margin: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
-  padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
-.day-total .label { font-family: var(--mono); font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
-.day-total .value { font-family: var(--display); font-size: 1.2rem; font-weight: 800; color: var(--accent); }
-.day-total .earning { font-family: var(--mono); font-size: 0.8rem; color: var(--gold); }
-
-.config-screen { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 200; padding: 80px 20px 40px; overflow-y: auto; }
+.day-tab {
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 9px 11px;
+  background: var(--panel);
+  color: var(--green);
+  min-width: 102px;
+  text-align: left;
+}
+.day-tab.active { background: var(--green); color: white; border-color: var(--green); }
+.day-name { display: block; font-size: 12px; font-weight: 900; text-transform: uppercase; line-height: 1.1; }
+.day-meta { display: block; margin-top: 3px; font-family: var(--mono); font-size: 11px; opacity: .78; }
+.content { flex: 1; width: 100%; max-width: 780px; margin: 0 auto; padding: 12px 12px 34px; }
+.route-summary {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.summary-head { background: var(--green); color: white; padding: 14px 14px 12px; }
+.summary-title { font-size: 19px; font-weight: 900; line-height: 1.22; }
+.summary-pills { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 10px; }
+.pill { display: inline-flex; align-items: center; min-height: 28px; padding: 5px 9px; border-radius: 8px; background: var(--mint); color: var(--green); font-size: 12px; font-weight: 900; }
+.summary-actions { display: grid; grid-template-columns: 1fr auto; gap: 8px; padding: 12px; }
+.primary-btn { border: 0; border-radius: 8px; min-height: 48px; padding: 12px 14px; background: #2eaf53; color: white; font-weight: 900; font-size: 15px; }
+.secondary-btn { border: 1px solid var(--line); border-radius: 8px; min-height: 48px; padding: 12px 14px; background: white; color: var(--green); font-weight: 900; }
+.error { background: var(--red-bg); color: var(--red); border: 1px solid #f4b6b6; border-radius: 8px; padding: 13px 14px; margin: 12px 0; line-height: 1.45; font-size: 14px; font-weight: 700; }
+.stop-list { display: flex; flex-direction: column; gap: 10px; }
+.stop-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(15,46,30,0.08);
+}
+.stop-card.done { opacity: .58; }
+.stop-main { display: grid; grid-template-columns: 46px 1fr auto; gap: 12px; padding: 14px; align-items: start; }
+.stop-number { width: 42px; height: 42px; border-radius: 8px; background: var(--green); color: white; display: grid; place-items: center; font-weight: 900; font-size: 18px; }
+.stop-card.pickup .stop-number { background: var(--gold); }
+.stop-card.deliver .stop-number { background: var(--green); }
+.stop-card.home .stop-number { background: #b7c8bd; color: var(--green); }
+.stop-body { min-width: 0; }
+.stop-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 6px; }
+.action-chip, .bag-chip { border-radius: 8px; padding: 4px 8px; font-size: 12px; font-weight: 900; }
+.action-chip.pickup { background: var(--gold-bg); color: #7a4b08; }
+.action-chip.deliver { background: var(--mint); color: var(--green); }
+.action-chip.home { background: #eef2ef; color: var(--muted); }
+.bag-chip { background: var(--panel-soft); border: 1px solid var(--line); color: var(--green); }
+.stop-hotel { font-size: 20px; font-weight: 950; line-height: 1.18; overflow-wrap: anywhere; }
+.stop-customer { margin-top: 6px; color: var(--muted); font-size: 15px; font-weight: 650; }
+.stop-mile { font-family: var(--mono); font-size: 15px; font-weight: 900; color: var(--green); background: var(--panel-soft); border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; white-space: nowrap; }
+.stop-actions { display: grid; grid-template-columns: 1fr 54px; gap: 8px; padding: 0 14px 14px; }
+.done-btn { border: 0; border-radius: 8px; min-height: 48px; background: #2eaf53; color: white; font-weight: 900; }
+.done-btn.undo { background: #dbe8df; color: var(--green); }
+.map-btn { border: 1px solid var(--line); border-radius: 8px; background: var(--panel-soft); color: var(--green); font-weight: 900; display: grid; place-items: center; text-decoration: none; }
+.proof-row { display: grid; grid-template-columns: 1fr; gap: 8px; padding: 0 14px 14px; }
+.proof-label { border: 1px dashed #b8cfc1; background: white; color: var(--green); border-radius: 8px; min-height: 44px; display: grid; place-items: center; font-weight: 900; }
+.proof-label input { display: none; }
+.day-total { margin-top: 12px; background: var(--green); color: white; border-radius: 8px; padding: 14px; display: grid; gap: 8px; }
+.day-total-title { font-weight: 900; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: #c8ecd2; }
+.day-total-line { display: flex; justify-content: space-between; gap: 12px; font-family: var(--mono); font-size: 15px; font-weight: 900; }
+.config-screen { position: fixed; inset: 0; z-index: 80; display: none; background: var(--page); overflow-y: auto; padding: 18px; }
 .config-screen.show { display: block; }
-.config-title { font-family: var(--display); font-size: 1.8rem; font-weight: 800; color: var(--accent); margin-bottom: 6px; }
-.config-sub { font-size: 0.85rem; color: var(--muted); margin-bottom: 28px; }
-.field { margin-bottom: 18px; }
-.field label { display: block; font-family: var(--mono); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 6px; }
-.field input { width: 100%; padding: 13px 16px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: var(--mono); font-size: 0.85rem; outline: none; }
-.field input:focus { border-color: var(--accent); }
-.config-btn { width: 100%; padding: 16px; background: var(--accent); color: var(--bg); border: none; border-radius: 12px; font-family: var(--display); font-weight: 800; font-size: 1rem; cursor: pointer; margin-top: 8px; }
-.config-close { position: fixed; top: 16px; right: 16px; background: var(--card); border: 1px solid var(--border); color: var(--muted); width: 40px; height: 40px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
-.loading-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; gap: 16px; }
-.loading-logo { font-family: var(--display); font-size: 2rem; font-weight: 800; color: var(--accent); }
-.loading-dots { display: flex; gap: 6px; }
-.loading-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: pulse 1s ease-in-out infinite; }
-.loading-dot:nth-child(2) { animation-delay: 0.2s; }
-.loading-dot:nth-child(3) { animation-delay: 0.4s; }
-@keyframes pulse { 0%,100%{opacity:0.2;transform:scale(0.8)} 50%{opacity:1;transform:scale(1)} }
-
-.error-msg { margin: 20px; background: #ef444420; border: 1px solid var(--red); border-radius: 12px; padding: 16px; font-size: 0.85rem; color: #fca5a5; line-height: 1.6; }
-.progress-bar { position: fixed; top: 64px; left: 0; height: 2px; background: var(--accent); transition: width 0.4s ease; z-index: 101; }
-.safe-bottom { height: env(safe-area-inset-bottom, 20px); }
+.config-card { max-width: 620px; margin: 0 auto; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; box-shadow: var(--shadow); overflow: hidden; }
+.config-head { background: var(--green); color: white; padding: 18px; display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+.config-title { font-size: 24px; font-weight: 950; }
+.close-btn { width: 40px; height: 40px; border-radius: 8px; border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.1); color: white; font-size: 18px; }
+.config-body { padding: 16px; }
+.field { margin-bottom: 14px; }
+.field label { display: block; margin-bottom: 6px; color: var(--muted); font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: .06em; }
+.field input { width: 100%; border: 1px solid var(--line); border-radius: 8px; min-height: 46px; padding: 11px 12px; background: var(--panel-soft); color: var(--ink); }
+.helper { color: var(--muted); font-size: 13px; line-height: 1.45; background: var(--panel-soft); border: 1px solid var(--line); padding: 12px; border-radius: 8px; }
+.loading { min-height: 44vh; display: grid; place-items: center; text-align: center; color: var(--muted); }
+.loading strong { display: block; color: var(--green); font-size: 26px; font-weight: 950; margin-bottom: 8px; }
+@media (max-width: 520px) {
+  .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .metric:nth-child(2) { border-right: 0; }
+  .metric:nth-child(3), .metric:nth-child(4) { border-top: 1px solid rgba(255,255,255,0.12); }
+  .day-tabs { top: 170px; }
+  .content { padding-top: 10px; }
+  .stop-main { grid-template-columns: 42px 1fr; }
+  .stop-mile { grid-column: 2; justify-self: start; margin-top: 2px; }
+  .summary-actions { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
-
-<div class="topbar">
-  <div class="logo">Bagrunner<span>BRIGANTES DRIVER</span></div>
-  <button class="gear-btn" onclick="showConfig()">&#9881;&#65039;</button>
-</div>
-
-<div class="progress-bar" id="progressBar" style="width:0%"></div>
-
-<div class="summary-strip" id="summaryStrip">
-  <div class="stat"><div class="val" id="statMiles">--</div><div class="lbl">Today's Miles</div></div>
-  <div class="stat-divider"></div>
-  <div class="stat"><div class="val" id="statEarnings">--</div><div class="lbl">Earnings</div></div>
-  <div class="stat-divider"></div>
-  <div class="stat"><div class="val" id="statStops">0</div><div class="lbl">Stops</div></div>
-  <div class="stat-divider"></div>
-  <div class="stat"><div class="val" id="statDone">0</div><div class="lbl">Done</div></div>
-  <button class="nav-btn" id="navBtn" onclick="openFullRoute()" style="display:none">&#128507; Full Route</button>
-</div>
-
-<div class="day-tabs" id="dayTabs"></div>
-<main class="main" id="main">
-  <div class="loading-screen">
-    <div class="loading-logo">Bagrunner</div>
-    <div class="loading-dots">
-      <div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div>
+<div class="shell">
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-title">Bagrunner</div>
+        <div class="brand-sub">Brigantes Driver</div>
+      </div>
+      <button class="icon-btn" type="button" onclick="showConfig()" aria-label="Settings">Settings</button>
     </div>
-    <div style="font-size:0.8rem;color:var(--muted)">Loading your route...</div>
-  </div>
-</main>
+    <div class="metrics">
+      <div class="metric"><span class="metric-value" id="statMiles">--</span><span class="metric-label">Miles</span></div>
+      <div class="metric"><span class="metric-value" id="statEarned">--</span><span class="metric-label">Earned</span></div>
+      <div class="metric"><span class="metric-value" id="statTime">--</span><span class="metric-label">Time</span></div>
+      <div class="metric"><span class="metric-value" id="statDone">0/0</span><span class="metric-label">Done</span></div>
+    </div>
+    <div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+  </header>
+
+  <nav class="day-tabs" id="dayTabs" aria-label="Route days"></nav>
+
+  <main class="content" id="main">
+    <div class="loading"><div><strong>Bagrunner</strong>Loading your route...</div></div>
+  </main>
+</div>
 
 <div class="config-screen" id="configScreen">
-  <button class="config-close" onclick="hideConfig()">&#10005;</button>
-  <div class="config-title">Setup</div>
-  <div class="config-sub">Connect to your Google Sheet to load routes</div>
-  <div class="field"><label>Google Sheets API Key</label><input type="text" id="cfgSheetsKey" placeholder="AIza..."></div>
-  <div class="field"><label>Spreadsheet ID</label><input type="text" id="cfgSheetId" placeholder="18ZCSv..."></div>
-  <div class="field"><label>Manifest Sheet Name</label><input type="text" id="cfgSheetName" placeholder="Manifest" value="Manifest"></div>
-  <div class="field"><label>Rate per Mile (£)</label><input type="number" id="cfgRate" placeholder="0.92" value="0.92" step="0.01"></div>
-  <div class="field"><label>Driver Name</label><input type="text" id="cfgDriver" placeholder="David Baxter" value="David Baxter"></div>
-  <button class="config-btn" onclick="saveConfigAndLoad()">Save &amp; Load Routes</button>
-  <div style="margin-top:20px;padding:14px;background:var(--card);border-radius:10px;font-size:0.78rem;color:var(--muted);line-height:1.6">
-    <strong style="color:var(--text)">How to get your Sheets API Key:</strong><br>
-    1. Go to console.cloud.google.com<br>2. APIs &amp; Services &rarr; Credentials<br>
-    3. Create API Key<br>4. Make sure Google Sheets API is enabled
+  <div class="config-card">
+    <div class="config-head">
+      <div>
+        <div class="config-title">Setup</div>
+        <div style="color:#c8ecd2;font-weight:800;font-size:13px;margin-top:3px">Connect the app to the Manifest sheet.</div>
+      </div>
+      <button class="close-btn" type="button" onclick="hideConfig()" aria-label="Close">x</button>
+    </div>
+    <div class="config-body">
+      <div class="field"><label>Google Sheets API key</label><input type="text" id="cfgSheetsKey" placeholder="AIza..."></div>
+      <div class="field"><label>Spreadsheet ID</label><input type="text" id="cfgSheetId" placeholder="18ZCSv..."></div>
+      <div class="field"><label>Manifest tab name</label><input type="text" id="cfgSheetName" value="Manifest"></div>
+      <div class="field"><label>Rate per mile</label><input type="number" id="cfgRate" value="0.92" step="0.01"></div>
+      <button class="primary-btn" type="button" onclick="saveConfigAndLoad()" style="width:100%">Save and load routes</button>
+      <p class="helper">The Google Sheet must be shared so the Sheets API can read it. This app only reads the Manifest tab and stores completion/proof-photo state on this device.</p>
+    </div>
   </div>
 </div>
 
@@ -173,291 +219,310 @@ var CONFIG = {
   sheetsKey: localStorage.getItem('br_sheetsKey') || '',
   sheetId: localStorage.getItem('br_sheetId') || '18ZCSvdubVDLnweOqHEgxrbldM_DyVlVVfEVMrxnHmUQ',
   sheetName: localStorage.getItem('br_sheetName') || 'Manifest',
-  ratePerMile: parseFloat(localStorage.getItem('br_rate')) || 0.92,
-  driver: localStorage.getItem('br_driver') || 'David Baxter'
+  ratePerMile: parseFloat(localStorage.getItem('br_rate')) || 0.92
 };
-
-var APP = { days: [], currentDayIdx: 0, completed: JSON.parse(localStorage.getItem('br_completed') || '{}') };
-
-// ── Action labels — must match Code.gs exactly ──────────────
-var ACTION_PICKUP  = 'PICKUP';
+var APP = {
+  days: [],
+  currentDayIdx: 0,
+  completed: JSON.parse(localStorage.getItem('br_completed') || '{}'),
+  proofs: JSON.parse(localStorage.getItem('br_proofs') || '{}')
+};
+var ACTION_PICKUP = 'PICKUP';
 var ACTION_DELIVER = 'DELIVER';
-var ACTION_START   = 'START';
-var ACTION_RETURN  = 'RETURN HOME';
+var ACTION_START = 'START';
+var ACTION_RETURN = 'RETURN HOME';
 
 window.addEventListener('load', function() {
   document.getElementById('cfgSheetsKey').value = CONFIG.sheetsKey;
   document.getElementById('cfgSheetId').value = CONFIG.sheetId;
   document.getElementById('cfgSheetName').value = CONFIG.sheetName;
   document.getElementById('cfgRate').value = CONFIG.ratePerMile;
-  document.getElementById('cfgDriver').value = CONFIG.driver;
-  if (!CONFIG.sheetsKey) { showConfig(); } else { loadManifest(); }
+  if (!CONFIG.sheetsKey) showConfig();
+  loadManifest();
 });
 
 function showConfig() { document.getElementById('configScreen').classList.add('show'); }
 function hideConfig() { document.getElementById('configScreen').classList.remove('show'); }
-
 function saveConfigAndLoad() {
   CONFIG.sheetsKey = document.getElementById('cfgSheetsKey').value.trim();
   CONFIG.sheetId = document.getElementById('cfgSheetId').value.trim();
   CONFIG.sheetName = document.getElementById('cfgSheetName').value.trim() || 'Manifest';
   CONFIG.ratePerMile = parseFloat(document.getElementById('cfgRate').value) || 0.92;
-  CONFIG.driver = document.getElementById('cfgDriver').value.trim();
   localStorage.setItem('br_sheetsKey', CONFIG.sheetsKey);
   localStorage.setItem('br_sheetId', CONFIG.sheetId);
   localStorage.setItem('br_sheetName', CONFIG.sheetName);
   localStorage.setItem('br_rate', CONFIG.ratePerMile);
-  localStorage.setItem('br_driver', CONFIG.driver);
   hideConfig();
   loadManifest();
 }
 
 async function loadManifest() {
   showLoading();
+  if (!CONFIG.sheetsKey) {
+    showError('Add your Google Sheets API key in Settings, then load routes.');
+    return;
+  }
   var url = 'https://sheets.googleapis.com/v4/spreadsheets/' + CONFIG.sheetId +
-    '/values/' + encodeURIComponent(CONFIG.sheetName) + '!A1:G300?key=' + CONFIG.sheetsKey;
+    '/values/' + encodeURIComponent(CONFIG.sheetName) + '!A1:G350?key=' + CONFIG.sheetsKey;
   try {
     var resp = await fetch(url);
-    if (!resp.ok) { var err = await resp.json(); throw new Error(err.error ? err.error.message : 'Status ' + resp.status); }
+    if (!resp.ok) {
+      var err = await resp.json().catch(function(){ return {}; });
+      throw new Error(err.error ? err.error.message : 'Status ' + resp.status);
+    }
     var data = await resp.json();
     APP.days = parseManifest(data.values || []);
-    if (APP.days.length === 0) { showError('No route data found. Run Manual Email Check then Calculate Route Mileage.'); return; }
+    if (!APP.days.length) {
+      showError('No route data found. Run the email check and route calculator in the Google Sheet first.');
+      return;
+    }
     APP.currentDayIdx = findTodayIdx();
     renderAll();
   } catch(e) {
-    showError('Could not load manifest: ' + e.message + '\n\nCheck your API key and make sure your Google Sheet is shared publicly (Anyone with the link can view).');
+    showError('Could not load the Manifest: ' + e.message);
   }
 }
 
-// ── PARSE MANIFEST ──────────────────────────────────────────
-// Matches plain text action labels: PICKUP, DELIVER, START, RETURN HOME
 function parseManifest(rows) {
   var days = [];
   var currentDay = null;
+  var dayNames = ['MON', 'TUES', 'WEDS', 'THUR', 'FRI', 'SAT', 'SUN'];
 
-  for (var i = 0; i < rows.length; i++) {
-    var row = rows[i];
-    var col0 = String(row[0] || '').trim();
-    var col1 = String(row[1] || '').trim().toUpperCase();
-    var col2 = String(row[2] || '').trim(); // Hotel
-    var col3 = String(row[3] || '').trim(); // Customer
-    var col4 = String(row[4] || '').trim(); // Bags
-    var col5 = String(row[5] || '').trim(); // Miles
-    var col6 = String(row[6] || '').trim(); // Notes/Earnings
-
-    // Day header detection — multiple strategies
-    // The Sheets API may return HYPERLINK formula display text or raw text
-    var dayNames = ['MON','TUES','WEDS','THUR','FRI','SAT','SUN'];
-    var col0Upper = col0.toUpperCase();
-    var isDayHeader = dayNames.some(function(d) { return col0Upper.indexOf(d) !== -1; }) ||
-                      col0.indexOf('Tap to Open') !== -1 ||
-                      col0.indexOf('Google Maps') !== -1 ||
-                      col0.indexOf('maps/dir') !== -1;
-
-    // Also check if ALL other columns are empty (merged header row)
-    var allOtherEmpty = !col1 && !col2 && !col3 && !col4 && col0.length > 3;
-    if (allOtherEmpty && col0.toUpperCase().indexOf('TOTAL') === -1 &&
-        col0.toUpperCase().indexOf('MANIFEST') === -1 &&
-        col0.toUpperCase().indexOf('GENERATED') === -1) {
-      isDayHeader = true;
-    }
+  rows.forEach(function(row, i) {
+    var col0 = cleanCell(row[0]);
+    var col1 = cleanCell(row[1]).toUpperCase();
+    var col2 = cleanCell(row[2]);
+    var col3 = cleanCell(row[3]);
+    var col4 = cleanCell(row[4]);
+    var col5 = cleanCell(row[5]);
+    var col6 = cleanCell(row[6]);
+    var upper0 = col0.toUpperCase();
+    var isDayHeader = dayNames.some(function(day) { return upper0.indexOf(day) !== -1; }) && upper0.indexOf('TOTAL') === -1;
+    if (!isDayHeader && upper0.indexOf('TAP TO OPEN ROUTE') !== -1) isDayHeader = true;
 
     if (isDayHeader) {
       if (currentDay) days.push(currentDay);
-      var label = col0
-        .replace(/- Tap to Open.*/i, '')
-        .replace(/- Google Maps.*/i, '')
-        .replace(/https:.*/, '')
-        .trim();
-      if (!label) label = col0.trim();
-      var mapsUrl = '';
-      var urlMatch = col0.match(/https:\/\/www\.google\.com\/maps\/dir\/[^\s"\)]+/);
-      if (urlMatch) mapsUrl = decodeURIComponent(urlMatch[0]);
-      currentDay = { label: label || 'Day', mapsUrl: mapsUrl, stops: [], totalMiles: 0, earnings: 0 };
-      continue;
+      currentDay = {
+        label: cleanDayLabel(col0),
+        mapsUrl: extractMapsUrl(col0),
+        stops: [],
+        totalMiles: 0,
+        earnings: 0,
+        estimatedTime: '',
+        estimatedFinish: ''
+      };
+      return;
+    }
+    if (!currentDay) return;
+
+    if (col3.toUpperCase() === 'DAY TOTAL' || col4.toUpperCase() === 'DAY TOTAL') {
+      var milesText = col4.indexOf('miles') !== -1 ? col4 : col5;
+      var moneyText = col5.indexOf('£') !== -1 ? col5 : col6;
+      currentDay.totalMiles = parseFloat(String(milesText).replace(/[^0-9.]/g, '')) || 0;
+      currentDay.earnings = parseFloat(String(moneyText).replace(/[^0-9.]/g, '')) || (currentDay.totalMiles * CONFIG.ratePerMile);
+      parseTimeNote(currentDay, col6);
+      return;
     }
 
-    if (!currentDay) continue;
+    if (col0.indexOf('WEEK TOTAL') !== -1) return;
+    if (col1 === 'ACTION' || col2 === 'HOTEL') return;
 
-    // Day total row — col3 = "DAY TOTAL", col4 = "66.4 miles", col5 = "£61.09"
-    if (col3 === 'DAY TOTAL' || (col4 && col4.indexOf('miles') !== -1)) {
-      var milesStr = col4 || col5 || '';
-      currentDay.totalMiles = parseFloat(milesStr) || 0;
-      var earnStr = col5 || col6 || '';
-      currentDay.earnings = parseFloat(earnStr.replace(/[£,]/g,'')) || 
-                            (currentDay.totalMiles * CONFIG.ratePerMile);
-      continue;
-    }
-
-    // Week total
-    if (col0.indexOf('WEEK TOTAL') !== -1) continue;
-
-    // Stop rows — match plain text labels
     if (col1 === ACTION_START) {
-      currentDay.stops.push({ type: 'home-start', hotel: 'Home Base', customers: '', bags: '', miles: '' });
-      continue;
+      currentDay.stops.push({ type: 'home', action: 'START', hotel: 'Home Base', customers: '', bags: '', miles: '', id: 'start_' + i });
+      return;
     }
-    if (col1 === ACTION_RETURN || col2 === 'Home Base' && col1 === '') {
-      currentDay.stops.push({ type: 'home-end', hotel: 'Return Home', customers: '', bags: '', miles: col5 });
-      continue;
+    if (col1 === ACTION_RETURN) {
+      currentDay.stops.push({ type: 'home', action: 'RETURN HOME', hotel: 'Home Base', customers: '', bags: '', miles: col5, id: 'return_' + i });
+      return;
     }
     if (col1 === ACTION_PICKUP && col2) {
-      currentDay.stops.push({ type: 'pickup', hotel: col2, customers: col3, bags: col4, miles: col5, id: 'stop_' + i });
-      continue;
+      currentDay.stops.push({ type: 'pickup', action: 'PICKUP', hotel: col2, customers: col3, bags: col4, miles: col5, id: 'stop_' + i });
+      return;
     }
     if (col1 === ACTION_DELIVER && col2) {
-      currentDay.stops.push({ type: 'deliver', hotel: col2, customers: col3, bags: col4, miles: col5, id: 'stop_' + i });
-      continue;
+      currentDay.stops.push({ type: 'deliver', action: 'DELIVER', hotel: col2, customers: col3, bags: col4, miles: col5, id: 'stop_' + i });
     }
-  }
-
+  });
   if (currentDay) days.push(currentDay);
-  return days.filter(function(d) { return d.stops.length > 0; });
+  return days.filter(function(day) { return day.stops.length > 0; });
+}
+
+function cleanCell(value) { return String(value || '').replace(/\s+/g, ' ').trim(); }
+function cleanDayLabel(value) {
+  return cleanCell(value)
+    .replace(/^[^A-Za-z0-9]*/, '')
+    .replace(/- Tap to Open Route in Google Maps.*/i, '')
+    .replace(/—.*$/g, '')
+    .trim() || 'Route day';
+}
+function extractMapsUrl(value) {
+  var match = String(value || '').match(/https:\/\/www\.google\.com\/maps\/dir\/[^\s")]+/);
+  return match ? decodeURIComponent(match[0]) : '';
+}
+function parseTimeNote(day, note) {
+  var text = cleanCell(note);
+  if (!text) return;
+  var timeMatch = text.match(/Est\. time:\s*([^|]+)/i);
+  if (timeMatch) day.estimatedTime = timeMatch[1].trim();
+  var finishMatch = text.match(/Finish if leaving now:\s*([^|]+)/i);
+  if (finishMatch) day.estimatedFinish = finishMatch[1].trim();
 }
 
 function findTodayIdx() {
   var today = new Date();
-  var days = ['Sun','Mon','Tues','Weds','Thur','Fri','Sat'];
-  var todayName = days[today.getDay()];
-  var todayDate = today.getDate();
+  var dayName = ['Sun','Mon','Tues','Weds','Thur','Fri','Sat'][today.getDay()].toLowerCase();
+  var date = String(today.getDate());
   for (var i = 0; i < APP.days.length; i++) {
     var label = APP.days[i].label.toLowerCase();
-    if (label.indexOf(todayName.toLowerCase()) !== -1 && label.indexOf(String(todayDate)) !== -1) return i;
+    if (label.indexOf(dayName) !== -1 && label.indexOf(date) !== -1) return i;
   }
   for (var j = 0; j < APP.days.length; j++) {
-    var dayKey = APP.days[j].label;
-    var done = APP.completed[dayKey] ? Object.keys(APP.completed[dayKey]).length : 0;
-    var total = APP.days[j].stops.filter(function(s) { return s.type === 'pickup' || s.type === 'deliver'; }).length;
-    if (done < total) return j;
+    var actionable = getActionStops(APP.days[j]).length;
+    var done = getDoneCount(APP.days[j]);
+    if (done < actionable) return j;
   }
   return 0;
 }
 
 function renderAll() { renderTabs(); renderDay(APP.currentDayIdx); }
-
 function renderTabs() {
   var tabs = document.getElementById('dayTabs');
-  tabs.innerHTML = '';
-  APP.days.forEach(function(day, idx) {
-    var tab = document.createElement('div');
-    tab.className = 'day-tab' + (idx === APP.currentDayIdx ? ' active' : '');
-    var stops = day.stops.filter(function(s) { return s.type === 'pickup' || s.type === 'deliver'; });
-    var doneCount = APP.completed[day.label] ? Object.keys(APP.completed[day.label]).length : 0;
-    var allDone = doneCount >= stops.length && stops.length > 0;
-    tab.innerHTML = day.label +
-      '<span class="tab-miles">' + (day.totalMiles > 0 ? day.totalMiles.toFixed(1) + ' mi' : '--') + '</span>' +
-      (allDone ? '<span class="completed-dot"></span>' : '');
-    tab.onclick = (function(i) { return function() { switchDay(i); }; })(idx);
-    tabs.appendChild(tab);
-  });
+  tabs.innerHTML = APP.days.map(function(day, idx) {
+    return '<button type="button" class="day-tab ' + (idx === APP.currentDayIdx ? 'active' : '') + '" onclick="switchDay(' + idx + ')">' +
+      '<span class="day-name">' + escapeHtml(day.label) + '</span>' +
+      '<span class="day-meta">' + (day.totalMiles ? day.totalMiles.toFixed(1) + ' mi' : '--') + (day.estimatedTime ? ' | ' + escapeHtml(day.estimatedTime) : '') + '</span>' +
+      '</button>';
+  }).join('');
 }
-
-function switchDay(idx) {
-  APP.currentDayIdx = idx;
-  renderAll();
-  document.getElementById('main').scrollTo(0,0);
-  window.scrollTo(0,0);
-}
+function switchDay(idx) { APP.currentDayIdx = idx; renderAll(); window.scrollTo(0, 0); }
 
 function renderDay(idx) {
   var day = APP.days[idx];
   if (!day) return;
-  var main = document.getElementById('main');
-  var completedForDay = APP.completed[day.label] || {};
-  var stops = day.stops.filter(function(s) { return s.type === 'pickup' || s.type === 'deliver'; });
-  var doneCount = Object.keys(completedForDay).length;
+  var stops = getActionStops(day);
+  var done = getDoneCount(day);
+  var completion = stops.length ? Math.round((done / stops.length) * 100) : 0;
 
-  document.getElementById('statMiles').textContent = day.totalMiles > 0 ? day.totalMiles.toFixed(1) + ' mi' : '--';
-  document.getElementById('statEarnings').textContent = day.earnings > 0 ? '£' + day.earnings.toFixed(2) : '--';
-  document.getElementById('statStops').textContent = stops.length;
-  document.getElementById('statDone').textContent = doneCount;
+  document.getElementById('statMiles').textContent = day.totalMiles ? day.totalMiles.toFixed(1) : '--';
+  document.getElementById('statEarned').textContent = day.earnings ? '£' + day.earnings.toFixed(2) : '--';
+  document.getElementById('statTime').textContent = day.estimatedTime || estimateTimeFromStops(day);
+  document.getElementById('statDone').textContent = done + '/' + stops.length;
+  document.getElementById('progressFill').style.width = completion + '%';
 
-  var pct = stops.length > 0 ? (doneCount / stops.length) * 100 : 0;
-  document.getElementById('progressBar').style.width = pct + '%';
+  var html = '<section class="route-summary">' +
+    '<div class="summary-head"><div class="summary-title">' + escapeHtml(day.label) + '</div>' +
+    '<div class="summary-pills">' +
+      '<span class="pill">' + stops.length + ' stops</span>' +
+      '<span class="pill">' + (day.totalMiles ? day.totalMiles.toFixed(1) + ' mi' : '--') + '</span>' +
+      '<span class="pill">' + (day.estimatedTime || estimateTimeFromStops(day)) + '</span>' +
+      (day.estimatedFinish ? '<span class="pill">Finish ' + escapeHtml(day.estimatedFinish) + '</span>' : '') +
+    '</div></div>' +
+    '<div class="summary-actions">' +
+      '<button class="primary-btn" type="button" onclick="openFullRoute()">Open full route</button>' +
+      '<button class="secondary-btn" type="button" onclick="loadManifest()">Refresh</button>' +
+    '</div></section>';
 
-  var navBtn = document.getElementById('navBtn');
-  if (day.mapsUrl) { navBtn.style.display = 'flex'; navBtn.onclick = function() { window.open(day.mapsUrl, '_blank'); }; }
-  else { navBtn.style.display = 'none'; }
-
-  var html = '';
-  day.stops.forEach(function(stop, stopIdx) {
-    var isDone = stop.id && completedForDay[stop.id];
-    var isActionable = stop.type === 'pickup' || stop.type === 'deliver';
-    var icon = stop.type === 'pickup' ? '&#128230;' : stop.type === 'deliver' ? '&#9989;' : '&#127968;';
-    var typeLabel = stop.type === 'pickup' ? 'PICKUP' : stop.type === 'deliver' ? 'DELIVER' : '';
-    var cardClass = (stop.type === 'home-start' || stop.type === 'home-end') ? 'home' : stop.type;
-
-    html += '<div class="stop-card ' + cardClass + (isDone ? ' completed' : '') + '" id="card_' + (stop.id || stopIdx) + '">';
-    html += '<div class="stop-header">';
-    html += '<div class="stop-type-icon">' + icon + '</div>';
-    html += '<div class="stop-info">';
-    if (typeLabel) html += '<div class="stop-type-label">' + typeLabel + '</div>';
-    html += '<div class="stop-hotel">' + stop.hotel + '</div>';
-    html += '</div>';
-    if (stop.miles && isActionable) html += '<div class="stop-miles">' + stop.miles + ' mi</div>';
-    html += '</div>';
-
-    if (stop.customers || stop.bags) {
-      html += '<div class="stop-meta">';
-      if (stop.customers) html += '<div class="stop-customer">' + stop.customers + '</div>';
-      if (stop.bags) html += '<div class="stop-bags">&#127890; ' + stop.bags + '</div>';
-      html += '</div>';
-    }
-
-    if (isActionable) {
-      var mapsLink = 'https://www.google.com/maps/dir/?api=1&destination=' +
-        encodeURIComponent(stop.hotel + ', Lake District, UK') + '&travelmode=driving';
-      html += '<div class="stop-actions">';
-      if (isDone) {
-        html += '<button class="btn-done unmark" onclick="toggleDone(\'' + day.label + '\',\'' + stop.id + '\')">&#10003; Done &mdash; tap to undo</button>';
-      } else {
-        html += '<button class="btn-done mark" onclick="toggleDone(\'' + day.label + '\',\'' + stop.id + '\')">Mark Complete</button>';
-      }
-      html += '<a class="btn-maps" href="' + mapsLink + '" target="_blank">&#128506;</a>';
-      html += '</div>';
-    }
-    html += '</div>';
-  });
-
-  if (day.totalMiles > 0) {
-    html += '<div class="day-total">' +
-      '<div><div class="label">Day Total</div><div class="earning">£' + day.earnings.toFixed(2) + '</div></div>' +
-      '<div class="value">' + day.totalMiles.toFixed(1) + ' mi</div></div>';
+  html += '<section class="stop-list">';
+  day.stops.forEach(function(stop, index) { html += renderStop(day, stop, index); });
+  html += '</section>';
+  if (day.totalMiles) {
+    html += '<section class="day-total"><div class="day-total-title">Day total</div>' +
+      '<div class="day-total-line"><span>Miles</span><span>' + day.totalMiles.toFixed(1) + ' mi</span></div>' +
+      '<div class="day-total-line"><span>Earnings</span><span>£' + day.earnings.toFixed(2) + '</span></div>' +
+      '<div class="day-total-line"><span>Time</span><span>' + (day.estimatedTime || estimateTimeFromStops(day)) + '</span></div>' +
+      (day.estimatedFinish ? '<div class="day-total-line"><span>Finish</span><span>' + escapeHtml(day.estimatedFinish) + '</span></div>' : '') +
+      '</section>';
   }
-  html += '<div class="safe-bottom"></div>';
-  main.innerHTML = html;
+  document.getElementById('main').innerHTML = html;
 }
 
+function renderStop(day, stop, index) {
+  var actionable = stop.type === 'pickup' || stop.type === 'deliver';
+  var done = actionable && isDone(day, stop);
+  var proofKey = proofId(day, stop);
+  var hasProof = !!APP.proofs[proofKey];
+  var actionClass = stop.type === 'pickup' ? 'pickup' : stop.type === 'deliver' ? 'deliver' : 'home';
+  var number = actionable ? getActionNumber(day, index) : (stop.action === 'START' ? 'S' : 'H');
+  var mapHref = stop.type === 'home' ? '' : makeStopMapLink(stop);
+
+  var html = '<article class="stop-card ' + actionClass + (done ? ' done' : '') + '">' +
+    '<div class="stop-main"><div class="stop-number">' + number + '</div><div class="stop-body">' +
+    '<div class="stop-row"><span class="action-chip ' + actionClass + '">' + escapeHtml(stop.action || 'HOME') + '</span>' +
+    (stop.bags ? '<span class="bag-chip">' + escapeHtml(stop.bags) + '</span>' : '') + '</div>' +
+    '<div class="stop-hotel">' + escapeHtml(stop.hotel) + '</div>' +
+    (stop.customers ? '<div class="stop-customer">' + escapeHtml(stop.customers) + '</div>' : '') +
+    '</div>' + (stop.miles ? '<div class="stop-mile">' + escapeHtml(stop.miles) + ' mi</div>' : '') + '</div>';
+
+  if (actionable) {
+    html += '<div class="proof-row"><label class="proof-label">' + (hasProof ? 'Proof photo added' : 'Add proof photo') +
+      '<input type="file" accept="image/*" capture="environment" onchange="saveProof(event, \'' + escapeJs(proofKey) + '\')"></label></div>';
+    html += '<div class="stop-actions"><button type="button" class="done-btn ' + (done ? 'undo' : '') + '" onclick="toggleDone(\'' + escapeJs(day.label) + '\',\'' + escapeJs(stop.id) + '\')">' +
+      (done ? 'Done - tap to undo' : 'Mark done') + '</button>' +
+      '<a class="map-btn" href="' + mapHref + '" target="_blank" aria-label="Open stop map">Map</a></div>';
+  }
+  html += '</article>';
+  return html;
+}
+
+function getActionStops(day) { return day.stops.filter(function(s) { return s.type === 'pickup' || s.type === 'deliver'; }); }
+function getActionNumber(day, stopIndex) {
+  var count = 0;
+  for (var i = 0; i <= stopIndex; i++) if (day.stops[i].type === 'pickup' || day.stops[i].type === 'deliver') count++;
+  return count;
+}
+function getDoneCount(day) {
+  var bucket = APP.completed[day.label] || {};
+  return getActionStops(day).filter(function(stop) { return bucket[stop.id]; }).length;
+}
+function isDone(day, stop) { return !!((APP.completed[day.label] || {})[stop.id]); }
 function toggleDone(dayLabel, stopId) {
   if (!APP.completed[dayLabel]) APP.completed[dayLabel] = {};
-  if (APP.completed[dayLabel][stopId]) { delete APP.completed[dayLabel][stopId]; }
-  else { APP.completed[dayLabel][stopId] = true; }
+  if (APP.completed[dayLabel][stopId]) delete APP.completed[dayLabel][stopId]; else APP.completed[dayLabel][stopId] = true;
   localStorage.setItem('br_completed', JSON.stringify(APP.completed));
-  renderDay(APP.currentDayIdx);
-  renderTabs();
+  renderAll();
 }
-
+function proofId(day, stop) { return day.label + '|' + stop.id; }
+function saveProof(event, key) {
+  var file = event.target.files && event.target.files[0];
+  if (!file) return;
+  APP.proofs[key] = { name: file.name, date: new Date().toISOString() };
+  localStorage.setItem('br_proofs', JSON.stringify(APP.proofs));
+  renderAll();
+}
+function estimateTimeFromStops(day) {
+  var stops = getActionStops(day).length;
+  if (!day.totalMiles && !stops) return '--';
+  var driveMins = Math.ceil((day.totalMiles || 0) / 25 * 60);
+  return formatMinutes(driveMins + (stops * 5));
+}
+function formatMinutes(minutes) {
+  minutes = Math.round(Number(minutes) || 0);
+  var h = Math.floor(minutes / 60);
+  var m = minutes % 60;
+  if (!h) return m + ' mins';
+  return h + 'h' + (m ? ' ' + m + 'm' : '');
+}
+function makeStopMapLink(stop) { return 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(stop.hotel + ', Lake District, UK') + '&travelmode=driving'; }
 function openFullRoute() {
   var day = APP.days[APP.currentDayIdx];
-  if (day && day.mapsUrl) window.open(day.mapsUrl, '_blank');
+  if (!day) return;
+  if (day.mapsUrl) { window.open(day.mapsUrl, '_blank'); return; }
+  var parts = ['3 Birch Street, Windermere, LA23 1EG'];
+  getActionStops(day).forEach(function(stop) { parts.push(stop.hotel + ', Lake District, UK'); });
+  parts.push('3 Birch Street, Windermere, LA23 1EG');
+  window.open('https://www.google.com/maps/dir/' + parts.map(encodeURIComponent).join('/'), '_blank');
 }
-
-function showLoading() {
-  document.getElementById('main').innerHTML =
-    '<div class="loading-screen"><div class="loading-logo">Bagrunner</div>' +
-    '<div class="loading-dots"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>' +
-    '<div style="font-size:0.8rem;color:var(--muted)">Loading your route...</div></div>';
+function showLoading() { document.getElementById('main').innerHTML = '<div class="loading"><div><strong>Bagrunner</strong>Loading your route...</div></div>'; }
+function showError(message) {
+  document.getElementById('main').innerHTML = '<div class="error">' + escapeHtml(message) + '</div>' +
+    '<button class="primary-btn" type="button" onclick="showConfig()" style="width:100%;margin-top:12px">Open settings</button>';
 }
-
-function showError(msg) {
-  document.getElementById('main').innerHTML =
-    '<div class="error-msg">' + msg.replace(/\n/g,'<br>') + '</div>' +
-    '<div style="padding:0 12px"><button onclick="showConfig()" style="width:100%;padding:14px;background:var(--accent);color:var(--bg);border:none;border-radius:10px;font-family:var(--display);font-weight:700;font-size:0.9rem;cursor:pointer;margin-top:8px">Open Settings</button></div>';
-}
+function escapeHtml(value) { return String(value || '').replace(/[&<>"]/g, function(c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function escapeJs(value) { return String(value || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
 
 if ('serviceWorker' in navigator) {
-  var swCode = "self.addEventListener('install',function(e){self.skipWaiting();});self.addEventListener('fetch',function(e){if(e.request.url.includes('sheets.googleapis.com')||e.request.url.includes('maps.googleapis.com'))return;e.respondWith(fetch(e.request).catch(function(){return caches.match(e.request);}));});";
-  var blob = new Blob([swCode], {type:'application/javascript'});
+  var swCode = "self.addEventListener('install',function(e){self.skipWaiting();});self.addEventListener('fetch',function(e){if(e.request.url.includes('sheets.googleapis.com'))return;e.respondWith(fetch(e.request).catch(function(){return caches.match(e.request);}));});";
+  var blob = new Blob([swCode], { type: 'application/javascript' });
   navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(function(){});
 }
 </script>
